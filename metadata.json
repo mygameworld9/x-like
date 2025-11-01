@@ -1,5 +1,0 @@
-{
-  "name": "Twitter Like Catcher (Cloud Sync)",
-  "description": "A browser extension to automatically capture liked tweets, analyze them with keywords, and sync them to a private Supabase database. This tool acts as a foundation for a personal knowledge base.",
-  "requestFramePermissions": []
-}
