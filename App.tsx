@@ -155,10 +155,26 @@ const App: React.FC = () => {
                   <div className="flex-grow">
                     <p className="text-sm font-semibold text-gray-300">@{tweet.author_handle}</p>
                     <p className="text-xs text-gray-400 mt-1">{truncateText(tweet.tweet_text)}</p>
-                    <div className="flex items-center gap-2 mt-2">
+                    <div className="flex items-center gap-2 mt-2 flex-wrap">
                       <a href={tweet.tweet_url} target="_blank" rel="noopener noreferrer" className="text-xs text-sky-400 hover:text-sky-300 flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                         <LinkIcon className="w-3 h-3" />{t('tweets.view')}
                       </a>
+                      {tweet.images && tweet.images.length > 0 && (
+                        <span className="text-xs bg-blue-900/50 text-blue-300 px-2 py-0.5 rounded flex items-center gap-1">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                          </svg>
+                          {tweet.images.length}
+                        </span>
+                      )}
+                      {tweet.videos && tweet.videos.length > 0 && (
+                        <span className="text-xs bg-purple-900/50 text-purple-300 px-2 py-0.5 rounded flex items-center gap-1">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+                          </svg>
+                          {tweet.videos.length}
+                        </span>
+                      )}
                       <span className="text-xs text-gray-500">{new Date(tweet.captured_at).toLocaleDateString()}</span>
                     </div>
                   </div>

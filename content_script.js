@@ -60,12 +60,48 @@ document.body.addEventListener('click', function(e) {
       return;
     }
 
+    // Extract images (exclude avatars and emojis)
+    const imgLinks = Array.from(tweetArticle.querySelectorAll('img')).filter(img => {
+      // Exclude avatars
+      const isAvatar =
+        (img.alt && ['Avatar', '头像', 'Profile image', 'Profile photo'].includes(img.alt)) ||
+        img.src.includes('/profile_images/') || img.src.includes('profile_banners');
+      // Exclude emojis
+      const isEmoji = img.alt && (img.alt === 'Emoji' || img.alt === '表情');
+      // Keep media images
+      const isMediaImg =
+        (img.src.includes('media') || img.src.includes('twimg')) &&
+        (
+          img.parentNode?.parentNode?.getAttribute('role') === 'group' ||
+          img.parentNode?.getAttribute('data-testid') === 'tweetPhoto' ||
+          img.parentNode?.getAttribute('role') === 'group'
+        ) &&
+        img.naturalWidth >= 60 && img.naturalHeight >= 60;
+      return !isAvatar && !isEmoji && isMediaImg;
+    }).map(img => img.src);
+
+    // Extract video links
+    let videoLinks = [];
+    const iStatusLink = tweetArticle.querySelector('a[href*="/i/status/"]');
+    if (iStatusLink) {
+      videoLinks.push("https://x.com" + iStatusLink.getAttribute('href'));
+    }
+    const videoEls = Array.from(tweetArticle.querySelectorAll('video'));
+    videoEls.forEach(video => {
+      if (video.src) videoLinks.push(video.src);
+      Array.from(video.querySelectorAll('source')).forEach(source => {
+        if (source.src) videoLinks.push(source.src);
+      });
+    });
+
     const data = {
       id: tweetId,
       author_name: authorId,
       author_handle: authorId,
       tweet_text: text,
-      tweet_url: tweetLink
+      tweet_url: tweetLink,
+      images: imgLinks.length > 0 ? imgLinks : undefined,
+      videos: videoLinks.length > 0 ? videoLinks : undefined
     };
 
     console.log('Sending tweet data:', data);

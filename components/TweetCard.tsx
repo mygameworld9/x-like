@@ -39,6 +39,43 @@ export const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
         </a>
       </div>
       <p className="my-3 text-gray-200 whitespace-pre-wrap">{tweet.tweet_text}</p>
+      
+      {/* Images */}
+      {tweet.images && tweet.images.length > 0 && (
+        <div className="grid grid-cols-2 gap-2 my-3">
+          {tweet.images.map((img, idx) => (
+            <a key={idx} href={img} target="_blank" rel="noopener noreferrer">
+              <img 
+                src={img} 
+                alt={`Image ${idx + 1}`} 
+                className="w-full h-32 object-cover rounded border border-gray-600 hover:border-sky-500 transition-colors"
+                loading="lazy"
+              />
+            </a>
+          ))}
+        </div>
+      )}
+      
+      {/* Videos */}
+      {tweet.videos && tweet.videos.length > 0 && (
+        <div className="my-3 space-y-2">
+          {tweet.videos.map((video, idx) => (
+            <a 
+              key={idx} 
+              href={video} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-sky-400 hover:text-sky-300 bg-gray-700/50 rounded px-3 py-2"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
+              </svg>
+              <span className="truncate">{video.includes('x.com') ? 'View Video' : `Video ${idx + 1}`}</span>
+            </a>
+          ))}
+        </div>
+      )}
+      
       {tweet.quoted_tweet && (
           <div className="border-l-2 border-gray-600 pl-3 my-2 text-sm">
             <p className="font-semibold text-gray-300">{tweet.quoted_tweet.author_name} <span className="text-gray-500">@{tweet.quoted_tweet.author_handle}</span></p>

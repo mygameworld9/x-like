@@ -13,6 +13,8 @@ export interface Tweet {
   author_handle: string;
   tweet_text: string;
   tweet_url: string;
+  images?: string[];
+  videos?: string[];
   tags?: string[];
   quoted_tweet?: QuotedTweet;
 }
