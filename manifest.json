@@ -9,14 +9,15 @@
     "activeTab"
   ],
   "host_permissions": [
-    "https://*.supabase.co/*"
+    "https://*.supabase.co/*",
+    "https://pbs.twimg.com/*"
   ],
   "action": {
     "default_popup": "index.html",
     "default_title": "Twitter Like Catcher"
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
+    "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' https://pbs.twimg.com data: blob:"
   },
   "background": {
     "service_worker": "background.js"

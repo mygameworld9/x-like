@@ -10,6 +10,11 @@ interface TweetCardProps {
 
 export const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
   const { t } = useLanguage();
+  const [imageErrors, setImageErrors] = React.useState<Set<number>>(new Set());
+  
+  const handleImageError = (idx: number) => {
+    setImageErrors(prev => new Set(prev).add(idx));
+  };
   
   const timeAgo = (dateString: string) => {
     const date = new Date(dateString);
@@ -44,13 +49,26 @@ export const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
       {tweet.images && tweet.images.length > 0 && (
         <div className="grid grid-cols-2 gap-2 my-3">
           {tweet.images.map((img, idx) => (
-            <a key={idx} href={img} target="_blank" rel="noopener noreferrer">
-              <img 
-                src={img} 
-                alt={`Image ${idx + 1}`} 
-                className="w-full h-32 object-cover rounded border border-gray-600 hover:border-sky-500 transition-colors"
-                loading="lazy"
-              />
+            <a key={idx} href={img} target="_blank" rel="noopener noreferrer" className="relative">
+              {imageErrors.has(idx) ? (
+                <div className="w-full h-32 flex items-center justify-center bg-gray-700 rounded border border-gray-600">
+                  <div className="text-center text-gray-400">
+                    <svg className="w-8 h-8 mx-auto mb-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                    </svg>
+                    <p className="text-xs">Image</p>
+                  </div>
+                </div>
+              ) : (
+                <img 
+                  src={img} 
+                  alt={`Image ${idx + 1}`} 
+                  className="w-full h-32 object-cover rounded border border-gray-600 hover:border-sky-500 transition-colors"
+                  loading="lazy"
+                  crossOrigin="anonymous"
+                  onError={() => handleImageError(idx)}
+                />
+              )}
             </a>
           ))}
         </div>
