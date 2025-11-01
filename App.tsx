@@ -30,22 +30,42 @@ const App: React.FC = () => {
   }, []);
 
   const handleExport = () => {
+    if (!chrome?.storage) {
+      alert('Chrome storage API not available');
+      return;
+    }
     chrome.storage.local.get(['tweets'], (result) => {
+      if (chrome.runtime.lastError) {
+        console.error('Export error:', chrome.runtime.lastError);
+        alert('Failed to export data');
+        return;
+      }
       const tweets = result.tweets || [];
+      if (tweets.length === 0) {
+        alert('No data to export');
+        return;
+      }
       const dataStr = JSON.stringify(tweets, null, 2);
       const blob = new Blob([dataStr], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = `twitter-likes-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
       URL.revokeObjectURL(url);
     });
   };
 
   const handleClear = () => {
+    if (!chrome?.storage) return;
     if (confirm('Clear all local data? This cannot be undone!')) {
       chrome.storage.local.set({ tweets: [] }, () => {
+        if (chrome.runtime.lastError) {
+          alert('Failed to clear data');
+          return;
+        }
         setStats({ total: 0, today: 0 });
         alert('Local data cleared!');
       });
@@ -53,14 +73,7 @@ const App: React.FC = () => {
   };
 
   const handleRefresh = () => {
-    chrome.storage.local.get(['tweets'], (result) => {
-      const tweets = result.tweets || [];
-      const today = new Date().toDateString();
-      const todayCount = tweets.filter((t: any) => 
-        new Date(t.captured_at).toDateString() === today
-      ).length;
-      setStats({ total: tweets.length, today: todayCount });
-    });
+    loadStats();
   };
 
   return (
