@@ -2,26 +2,29 @@
 import React from 'react';
 import type { Tweet } from '../types';
 import { LinkIcon } from './icons';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface TweetCardProps {
   tweet: Tweet;
 }
 
 export const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
+  const { t } = useLanguage();
+  
   const timeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
     let interval = seconds / 31536000;
-    if (interval > 1) return Math.floor(interval) + "y ago";
+    if (interval > 1) return Math.floor(interval) + t('timeAgo.years');
     interval = seconds / 2592000;
-    if (interval > 1) return Math.floor(interval) + "mo ago";
+    if (interval > 1) return Math.floor(interval) + t('timeAgo.months');
     interval = seconds / 86400;
-    if (interval > 1) return Math.floor(interval) + "d ago";
+    if (interval > 1) return Math.floor(interval) + t('timeAgo.days');
     interval = seconds / 3600;
-    if (interval > 1) return Math.floor(interval) + "h ago";
+    if (interval > 1) return Math.floor(interval) + t('timeAgo.hours');
     interval = seconds / 60;
-    if (interval > 1) return Math.floor(interval) + "m ago";
-    return Math.floor(seconds) + "s ago";
+    if (interval > 1) return Math.floor(interval) + t('timeAgo.minutes');
+    return Math.floor(seconds) + t('timeAgo.seconds');
   };
     
   return (
